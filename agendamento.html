@@ -2,205 +2,282 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Agendamento</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agendamento - Jaguar Motopeças</title>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<link rel="stylesheet" href="style.css">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container {
+    width: 100%;
+    max-width: 550px;
+    background: #222;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px #000;
+  }
+  img.logo {
+    display: block;
+    margin: 0 auto 20px;
+    width: 200px;
+  }
+  h2 {
+    text-align: center;
+    color: #00e676;
+    margin-bottom: 20px;
+  }
+  input, select, button {
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+  }
+  input, select {
+    background: #333;
+    color: #fff;
+  }
+  button {
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+  }
+  #btnSalvar {
+    background: #00e676;
+    color: #000;
+  }
+  #btnSalvar:hover {
+    background: #00c853;
+  }
+  #btnMeusAgendamentos {
+    background: #ff9800;
+    color: #fff;
+  }
+  #btnMeusAgendamentos:hover {
+    background: #fb8c00;
+  }
+  #listaAgendamentos {
+    margin-top: 20px;
+    background: #333;
+    padding: 15px;
+    border-radius: 10px;
+  }
+  #listaAgendamentos li {
+    margin: 8px 0;
+  }
+</style>
 </head>
 <body>
+<div class="container">
 
-<h2>Agendamento de Serviço</h2>
+  <img src="logo_jaguar.png" alt="Jaguar Motopeças" class="logo">
 
-<form id="formAgendamento">
-  <input id="nome" placeholder="Nome do Cliente" required>
-  <input id="telefone" placeholder="Telefone" required>
-  <input id="moto" placeholder="Moto" required>
-  <input id="modelo" placeholder="Modelo" required>
-  <input id="ano" type="number" placeholder="Ano" required>
-  <input id="data" type="date" required>
-  <input id="hora" type="time" required>
-  
-  <select id="servico" required>
-    <option value="">Selecione o serviço</option>
+  <h2>Agendamento de Serviço</h2>
 
-    <!-- MOTOR -->
-    <optgroup label="🔧 MOTOR">
-      <option>Revisão completa de motor</option>
-      <option>Abertura e fechamento de motor</option>
-      <option>Retífica de motor</option>
-      <option>Troca de pistão e anéis</option>
-      <option>Troca de biela</option>
-      <option>Troca de virabrequim</option>
-      <option>Troca de comando de válvulas</option>
-      <option>Regulagem de válvulas</option>
-      <option>Troca de junta do motor</option>
-      <option>Troca de retentores</option>
-      <option>Troca de rolamentos internos</option>
-      <option>Correção de vazamentos de óleo</option>
-      <option>Limpeza interna de motor</option>
-      <option>Análise de ruídos e batidas</option>
-    </optgroup>
+  <form id="formAgendamento">
+    <input id="nome" placeholder="Nome do Cliente" required>
+    <input id="telefone" placeholder="Telefone" required>
+    <input id="moto" placeholder="Moto" required>
+    <input id="modelo" placeholder="Modelo" required>
+    <input id="ano" type="number" placeholder="Ano" required>
+    <input id="data" type="date" required>
+    <input id="hora" type="time" required>
 
-    <!-- SISTEMA DE TRANSMISSÃO -->
-    <optgroup label="⚙️ SISTEMA DE TRANSMISSÃO">
-      <option>Troca de corrente</option>
-      <option>Troca de pinhão</option>
-      <option>Troca de coroa</option>
-      <option>Ajuste de corrente</option>
-      <option>Kit relação completo</option>
-      <option>Troca de embreagem</option>
-      <option>Troca de discos de embreagem</option>
-      <option>Troca de molas de embreagem</option>
-      <option>Regulagem de embreagem</option>
-      <option>Troca de cabo de embreagem</option>
-    </optgroup>
+    <select id="servico" required>
+      <option value="">Selecione o serviço</option>
 
-    <!-- CARBURADOR -->
-    <optgroup label="⛽ SISTEMA DE ALIMENTAÇÃO - CARBURADOR">
-      <option>Limpeza de carburador</option>
-      <option>Regulagem de carburador</option>
-      <option>Troca de giclês</option>
-      <option>Troca de boia</option>
-      <option>Troca de reparo de carburador</option>
-    </optgroup>
+      <!-- MOTOR -->
+      <optgroup label="🔧 MOTOR">
+        <option>Revisão completa de motor</option>
+        <option>Abertura e fechamento de motor</option>
+        <option>Retífica de motor</option>
+        <option>Troca de pistão e anéis</option>
+        <option>Troca de biela</option>
+        <option>Troca de virabrequim</option>
+        <option>Troca de comando de válvulas</option>
+        <option>Regulagem de válvulas</option>
+        <option>Troca de junta do motor</option>
+        <option>Troca de retentores</option>
+        <option>Troca de rolamentos internos</option>
+        <option>Correção de vazamentos de óleo</option>
+        <option>Limpeza interna de motor</option>
+        <option>Análise de ruídos e batidas</option>
+      </optgroup>
 
-    <!-- INJEÇÃO ELETRÔNICA -->
-    <optgroup label="⛽ SISTEMA DE ALIMENTAÇÃO - INJEÇÃO ELETRÔNICA">
-      <option>Diagnóstico por scanner</option>
-      <option>Limpeza de bico injetor</option>
-      <option>Reset de ECU</option>
-      <option>Atualização de parâmetros</option>
-      <option>Correção de falhas de injeção</option>
-    </optgroup>
+      <!-- SISTEMA DE TRANSMISSÃO -->
+      <optgroup label="⚙️ SISTEMA DE TRANSMISSÃO">
+        <option>Troca de corrente</option>
+        <option>Troca de pinhão</option>
+        <option>Troca de coroa</option>
+        <option>Ajuste de corrente</option>
+        <option>Kit relação completo</option>
+        <option>Troca de embreagem</option>
+        <option>Troca de discos de embreagem</option>
+        <option>Troca de molas de embreagem</option>
+        <option>Regulagem de embreagem</option>
+        <option>Troca de cabo de embreagem</option>
+      </optgroup>
 
-    <!-- SISTEMA DE IGNIÇÃO -->
-    <optgroup label="🔥 SISTEMA DE IGNIÇÃO">
-      <option>Troca de vela</option>
-      <option>Troca de cachimbo de vela</option>
-      <option>Troca de bobina de ignição</option>
-      <option>Troca de CDI</option>
-      <option>Diagnóstico de falha de ignição</option>
-      <option>Ajuste de ponto de ignição</option>
-    </optgroup>
+      <!-- CARBURADOR -->
+      <optgroup label="⛽ SISTEMA DE ALIMENTAÇÃO - CARBURADOR">
+        <option>Limpeza de carburador</option>
+        <option>Regulagem de carburador</option>
+        <option>Troca de giclês</option>
+        <option>Troca de boia</option>
+        <option>Troca de reparo de carburador</option>
+      </optgroup>
 
-    <!-- SISTEMA ELÉTRICO -->
-    <optgroup label="⚡ SISTEMA ELÉTRICO">
-      <option>Revisão elétrica completa</option>
-      <option>Troca de bateria</option>
-      <option>Teste de carga de bateria</option>
-      <option>Troca de regulador/retificador</option>
-      <option>Troca de estator</option>
-      <option>Troca de chicote elétrico</option>
-      <option>Reparo em chicote</option>
-      <option>Troca de relés</option>
-      <option>Troca de fusíveis</option>
-      <option>Instalação de tomada USB</option>
-      <option>Instalação de alarme</option>
-      <option>Instalação de rastreador</option>
-    </optgroup>
+      <!-- INJEÇÃO ELETRÔNICA -->
+      <optgroup label="⛽ SISTEMA DE ALIMENTAÇÃO - INJEÇÃO ELETRÔNICA">
+        <option>Diagnóstico por scanner</option>
+        <option>Limpeza de bico injetor</option>
+        <option>Reset de ECU</option>
+        <option>Atualização de parâmetros</option>
+        <option>Correção de falhas de injeção</option>
+      </optgroup>
 
-    <!-- ILUMINAÇÃO -->
-    <optgroup label="💡 ILUMINAÇÃO">
-      <option>Troca de lâmpada de farol</option>
-      <option>Troca de farol completo</option>
-      <option>Troca de lanterna traseira</option>
-      <option>Troca de pisca</option>
-      <option>Instalação de LED</option>
-      <option>Correção de falhas de iluminação</option>
-    </optgroup>
+      <!-- SISTEMA DE IGNIÇÃO -->
+      <optgroup label="🔥 SISTEMA DE IGNIÇÃO">
+        <option>Troca de vela</option>
+        <option>Troca de cachimbo de vela</option>
+        <option>Troca de bobina de ignição</option>
+        <option>Troca de CDI</option>
+        <option>Diagnóstico de falha de ignição</option>
+        <option>Ajuste de ponto de ignição</option>
+      </optgroup>
 
-    <!-- SUSPENSÃO -->
-    <optgroup label="🛞 SUSPENSÃO">
-      <option>Revisão de suspensão dianteira</option>
-      <option>Troca de retentores de bengala</option>
-      <option>Troca de óleo da suspensão</option>
-      <option>Revisão de suspensão traseira</option>
-      <option>Troca de amortecedor</option>
-      <option>Ajuste de suspensão</option>
-    </optgroup>
+      <!-- SISTEMA ELÉTRICO -->
+      <optgroup label="⚡ SISTEMA ELÉTRICO">
+        <option>Revisão elétrica completa</option>
+        <option>Troca de bateria</option>
+        <option>Teste de carga de bateria</option>
+        <option>Troca de regulador/retificador</option>
+        <option>Troca de estator</option>
+        <option>Troca de chicote elétrico</option>
+        <option>Reparo em chicote</option>
+        <option>Troca de relés</option>
+        <option>Troca de fusíveis</option>
+        <option>Instalação de tomada USB</option>
+        <option>Instalação de alarme</option>
+        <option>Instalação de rastreador</option>
+      </optgroup>
 
-    <!-- FREIOS -->
-    <optgroup label="🛑 FREIOS">
-      <option>Troca de pastilhas de freio</option>
-      <option>Troca de lonas de freio</option>
-      <option>Troca de disco de freio</option>
-      <option>Sangria de freio</option>
-      <option>Troca de fluido de freio</option>
-      <option>Revisão de pinça</option>
-      <option>Troca de cilindro mestre</option>
-      <option>Ajuste de freio traseiro</option>
-    </optgroup>
+      <!-- ILUMINAÇÃO -->
+      <optgroup label="💡 ILUMINAÇÃO">
+        <option>Troca de lâmpada de farol</option>
+        <option>Troca de farol completo</option>
+        <option>Troca de lanterna traseira</option>
+        <option>Troca de pisca</option>
+        <option>Instalação de LED</option>
+        <option>Correção de falhas de iluminação</option>
+      </optgroup>
 
-    <!-- RODAS E PNEUS -->
-    <optgroup label="🛞 RODAS E PNEUS">
-      <option>Troca de pneu</option>
-      <option>Balanceamento</option>
-      <option>Alinhamento de roda</option>
-      <option>Troca de câmara de ar</option>
-      <option>Reparo de roda</option>
-      <option>Troca de rolamentos de roda</option>
-      <option>Aperto e ajuste de raios</option>
-    </optgroup>
+      <!-- SUSPENSÃO -->
+      <optgroup label="🛞 SUSPENSÃO">
+        <option>Revisão de suspensão dianteira</option>
+        <option>Troca de retentores de bengala</option>
+        <option>Troca de óleo da suspensão</option>
+        <option>Revisão de suspensão traseira</option>
+        <option>Troca de amortecedor</option>
+        <option>Ajuste de suspensão</option>
+      </optgroup>
 
-    <!-- DIREÇÃO -->
-    <optgroup label="🧰 DIREÇÃO">
-      <option>Revisão de caixa de direção</option>
-      <option>Troca de rolamentos de direção</option>
-      <option>Ajuste de mesa</option>
-      <option>Alinhamento de guidão</option>
-    </optgroup>
+      <!-- FREIOS -->
+      <optgroup label="🛑 FREIOS">
+        <option>Troca de pastilhas de freio</option>
+        <option>Troca de lonas de freio</option>
+        <option>Troca de disco de freio</option>
+        <option>Sangria de freio</option>
+        <option>Troca de fluido de freio</option>
+        <option>Revisão de pinça</option>
+        <option>Troca de cilindro mestre</option>
+        <option>Ajuste de freio traseiro</option>
+      </optgroup>
 
-    <!-- CHASSI -->
-    <optgroup label="🛠️ CHASSI E ESTRUTURA">
-      <option>Aperto geral</option>
-      <option>Solda em chassi</option>
-      <option>Correção de folgas</option>
-      <option>Substituição de suportes</option>
-      <option>Ajuste de pedaleiras</option>
-      <option>Troca de cavalete</option>
-    </optgroup>
+      <!-- RODAS E PNEUS -->
+      <optgroup label="🛞 RODAS E PNEUS">
+        <option>Troca de pneu</option>
+        <option>Balanceamento</option>
+        <option>Alinhamento de roda</option>
+        <option>Troca de câmara de ar</option>
+        <option>Reparo de roda</option>
+        <option>Troca de rolamentos de roda</option>
+        <option>Aperto e ajuste de raios</option>
+      </optgroup>
 
-    <!-- ESTÉTICA -->
-    <optgroup label="🧽 ESTÉTICA E CONFORTO">
-      <option>Lavagem técnica</option>
-      <option>Polimento</option>
-      <option>Ajuste de banco</option>
-      <option>Troca de manoplas</option>
-      <option>Troca de retrovisores</option>
-      <option>Instalação de protetores</option>
-      <option>Envelopamento simples</option>
-    </optgroup>
+      <!-- DIREÇÃO -->
+      <optgroup label="🧰 DIREÇÃO">
+        <option>Revisão de caixa de direção</option>
+        <option>Troca de rolamentos de direção</option>
+        <option>Ajuste de mesa</option>
+        <option>Alinhamento de guidão</option>
+      </optgroup>
 
-    <!-- REVISÕES PROGRAMADAS -->
-    <optgroup label="🔍 REVISÕES PROGRAMADAS">
-      <option>Revisão 1.000 km</option>
-      <option>Revisão 5.000 km</option>
-      <option>Revisão 10.000 km</option>
-      <option>Revisão preventiva completa</option>
-      <option>Check-up geral</option>
-    </optgroup>
+      <!-- CHASSI E ESTRUTURA -->
+      <optgroup label="🛠️ CHASSI E ESTRUTURA">
+        <option>Aperto geral</option>
+        <option>Solda em chassi</option>
+        <option>Correção de folgas</option>
+        <option>Substituição de suportes</option>
+        <option>Ajuste de pedaleiras</option>
+        <option>Troca de cavalete</option>
+      </optgroup>
 
-    <!-- SERVIÇOS COMPLEMENTARES -->
-    <optgroup label="📦 SERVIÇOS COMPLEMENTARES">
-      <option>Orçamento técnico</option>
-      <option>Laudo técnico</option>
-      <option>Pré-vistoria</option>
-      <option>Inspeção para viagem</option>
-      <option>Diagnóstico geral</option>
-      <option>Atendimento emergencial</option>
-    </optgroup>
+      <!-- ESTÉTICA E CONFORTO -->
+      <optgroup label="🧽 ESTÉTICA E CONFORTO">
+        <option>Lavagem técnica</option>
+        <option>Polimento</option>
+        <option>Ajuste de banco</option>
+        <option>Troca de manoplas</option>
+        <option>Troca de retrovisores</option>
+        <option>Instalação de protetores</option>
+        <option>Envelopamento simples</option>
+      </optgroup>
 
-  </select>
+      <!-- REVISÕES PROGRAMADAS -->
+      <optgroup label="🔍 REVISÕES PROGRAMADAS">
+        <option>Revisão 1.000 km</option>
+        <option>Revisão 5.000 km</option>
+        <option>Revisão 10.000 km</option>
+        <option>Revisão preventiva completa</option>
+        <option>Check-up geral</option>
+      </optgroup>
 
-  <button type="submit" id="btnSalvar">Salvar Agendamento</button>
-</form>
+      <!-- SERVIÇOS COMPLEMENTARES -->
+      <optgroup label="📦 SERVIÇOS COMPLEMENTARES">
+        <option>Orçamento técnico</option>
+        <option>Laudo técnico</option>
+        <option>Pré-vistoria</option>
+        <option>Inspeção para viagem</option>
+        <option>Diagnóstico geral</option>
+        <option>Atendimento emergencial</option>
+      </optgroup>
 
-<br>
-<button onclick="voltar()">⬅ Voltar</button>
+    </select>
+
+    <button type="submit" id="btnSalvar">💾 Salvar Agendamento</button>
+    <button type="button" id="btnMeusAgendamentos">📅 Meus Agendamentos</button>
+  </form>
+
+  <button onclick="voltar()" style="margin-top:10px; width:100%; background:#555;">⬅ Voltar</button>
+
+  <div id="listaAgendamentos" style="display:none;">
+    <h3>Seus Agendamentos:</h3>
+    <ul id="agendamentosCliente"></ul>
+  </div>
+
+</div>
 
 <script>
-  // Configuração Firebase
+  // Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyC4T7yFe67rW7vCyTB9hARjfUOQwVCPmj0",
     authDomain: "jaguarmotopecasagenda.firebaseapp.com",
@@ -217,7 +294,6 @@
 
   btnSalvar.addEventListener("click", async (e) => {
     e.preventDefault();
-
     const nomeCliente = document.getElementById("nome").value.trim();
     const telefoneCliente = document.getElementById("telefone").value.trim();
     const moto = document.getElementById("moto").value.trim();
@@ -233,7 +309,6 @@
     }
 
     try {
-      // Salva no Firestore
       await db.collection("agendamentos").add({
         nome: nomeCliente,
         telefone: telefoneCliente,
@@ -248,27 +323,52 @@
 
       alert("✅ Agendamento salvo com sucesso!");
 
-      // WhatsApp
       const numeroLoja = "5585921496714";
       const numeroCliente = telefoneCliente.replace(/\D/g,"");
 
-      const msgLoja = `📅 *Novo agendamento*
-Cliente: ${nomeCliente}
-Telefone: ${telefoneCliente}
-Moto: ${moto} ${modelo}
-Ano: ${ano}
-Serviço: ${servico}
-Data/Hora: ${data} ${hora}`;
-
+      const msgLoja = `📅 *Novo agendamento*\nCliente: ${nomeCliente}\nTelefone: ${telefoneCliente}\nMoto: ${moto} ${modelo}\nAno: ${ano}\nServiço: ${servico}\nData/Hora: ${data} ${hora}`;
       const msgCliente = `Olá ${nomeCliente}! Seu agendamento para ${moto} ${modelo} (${servico}) foi confirmado para ${data} às ${hora}. Obrigado!`;
 
       window.open(`https://wa.me/${numeroLoja}?text=${encodeURIComponent(msgLoja)}`, "_blank");
       window.open(`https://wa.me/55${numeroCliente}?text=${encodeURIComponent(msgCliente)}`, "_blank");
 
       form.reset();
-
     } catch (error) {
       alert("❌ Erro ao salvar: " + error.message);
+    }
+  });
+
+  const btnMeusAgendamentos = document.getElementById("btnMeusAgendamentos");
+  const listaDiv = document.getElementById("listaAgendamentos");
+  const ulAgendamentos = document.getElementById("agendamentosCliente");
+
+  btnMeusAgendamentos.addEventListener("click", async () => {
+    const telefoneCliente = prompt("Digite seu telefone para ver seus agendamentos:");
+    if (!telefoneCliente) return;
+
+    ulAgendamentos.innerHTML = "";
+
+    try {
+      const querySnapshot = await db.collection("agendamentos")
+        .where("telefone", "==", telefoneCliente)
+        .orderBy("criadoEm", "desc")
+        .get();
+
+      if (querySnapshot.empty) {
+        ulAgendamentos.innerHTML = "<li>Nenhum agendamento encontrado.</li>";
+      } else {
+        querySnapshot.forEach(doc => {
+          const data = doc.data();
+          const li = document.createElement("li");
+          li.textContent = `${data.data} às ${data.hora} - ${data.servico} (${data.moto} ${data.modelo})`;
+          ulAgendamentos.appendChild(li);
+        });
+      }
+
+      listaDiv.style.display = "block";
+      listaDiv.scrollIntoView({behavior: "smooth"});
+    } catch (error) {
+      alert("❌ Erro ao buscar agendamentos: " + error.message);
     }
   });
 
@@ -276,6 +376,5 @@ Data/Hora: ${data} ${hora}`;
     location.href = "index.html";
   }
 </script>
-
 </body>
 </html>
