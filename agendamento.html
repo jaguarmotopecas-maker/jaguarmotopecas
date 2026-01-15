@@ -1,10 +1,11 @@
 <script>
 const form = document.getElementById("formAgendamento");
+const btnSalvar = document.getElementById("btnSalvar");
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault(); // impede recarregar a página
+btnSalvar.addEventListener("click", async (e) => {
+  e.preventDefault(); // evita recarregar a página
 
-  // Valores do formulário
+  // Pegando valores do formulário
   const nomeCliente = document.getElementById("nome").value.trim();
   const telefoneCliente = document.getElementById("telefone").value.trim();
   const moto = document.getElementById("moto").value.trim();
@@ -35,19 +36,27 @@ form.addEventListener("submit", async (e) => {
 
     alert("✅ Agendamento salvo com sucesso!");
 
-    // --- ENVIA WHATSAPP ---
+    // --- Prepara links WhatsApp ---
+    const numeroLoja = "559999999999"; // Coloque seu número da loja
+    const numeroCliente = telefoneCliente.replace(/\D/g, "");
 
-    // 1️⃣ WhatsApp da loja (coloque o número da sua loja)
-    const numeroLoja = "5585921496714"; // EXEMPLO: 55 + DDD + número
     const msgLoja = `📅 *Novo agendamento*\nCliente: ${nomeCliente}\nTelefone: ${telefoneCliente}\nMoto: ${moto} ${modelo}\nAno: ${ano}\nServiço: ${servico}\nData/Hora: ${data} ${hora}`;
-    window.open(`https://wa.me/${numeroLoja}?text=${encodeURIComponent(msgLoja)}`, "_blank");
-
-    // 2️⃣ WhatsApp do cliente
-    const numeroCliente = telefoneCliente.replace(/\D/g, ""); // remove caracteres não numéricos
     const msgCliente = `Olá ${nomeCliente}! Seu agendamento para ${moto} ${modelo} (${servico}) foi confirmado para ${data} às ${hora}. Obrigado!`;
-    window.open(`https://wa.me/55${numeroCliente}?text=${encodeURIComponent(msgCliente)}`, "_blank");
 
-    // Limpa o formulário
+    // Cria conteúdo HTML para a aba de WhatsApp
+    const html = `
+      <h2>Agendamento salvo com sucesso!</h2>
+      <p>Clique nos botões abaixo para enviar a confirmação via WhatsApp:</p>
+      <button onclick="window.open('https://wa.me/${numeroLoja}?text=${encodeURIComponent(msgLoja)}', '_blank')">Enviar para Loja</button>
+      <button onclick="window.open('https://wa.me/55${numeroCliente}?text=${encodeURIComponent(msgCliente)}', '_blank')">Enviar para Cliente</button>
+    `;
+
+    // Abre uma aba única
+    const win = window.open("", "_blank");
+    win.document.body.innerHTML = html;
+    win.document.title = "Agendamento - WhatsApp";
+
+    // Limpa formulário
     form.reset();
 
   } catch (error) {
