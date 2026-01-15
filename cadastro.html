@@ -2,10 +2,12 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Cadastro</title>
+<title>Cadastro de Cliente</title>
 
+<!-- Firebase COMPAT (correto para esse formato) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -22,21 +24,37 @@
 
 <button onclick="salvar()">Salvar</button>
 
-<script src="firebase.js"></script>
 <script>
+/* CONFIGURAÇÃO FIREBASE */
+const firebaseConfig = {
+  apiKey: "AIzaSyC4T7yFe67rW7vCyTB9hARjfUOQwVCPmj0",
+  authDomain: "jaguarmotopecasagenda.firebaseapp.com",
+  projectId: "jaguarmotopecasagenda",
+  storageBucket: "jaguarmotopecasagenda.firebasestorage.app",
+  messagingSenderId: "601748187488",
+  appId: "1:601748187488:web:76fc5ac3fa9ccab1c6d605"
+};
+
+/* INICIALIZA */
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+/* FUNÇÃO SALVAR */
 function salvar(){
   db.collection("clientes").add({
-    nome: nome.value,
-    usuario: usuario.value,
-    moto: moto.value,
-    ano: ano.value,
-    modelo: modelo.value,
-    placa: placa.value,
-    senha: senha.value,
-    criadoEm: new Date()
-  }).then(()=>{
-    alert("Cadastro realizado!");
-    location.href="login.html";
+    nome: document.getElementById("nome").value,
+    usuario: document.getElementById("usuario").value,
+    moto: document.getElementById("moto").value,
+    ano: document.getElementById("ano").value,
+    modelo: document.getElementById("modelo").value,
+    placa: document.getElementById("placa").value,
+    senha: document.getElementById("senha").value,
+    criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    alert("Cadastro realizado com sucesso!");
+    window.location.href = "login.html";
+  }).catch((error) => {
+    alert("Erro ao salvar: " + error.message);
   });
 }
 </script>
