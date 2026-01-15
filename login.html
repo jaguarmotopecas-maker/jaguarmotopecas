@@ -1,35 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <title>Login</title>
 
+<!-- Firebase COMPAT -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <h2>Login</h2>
 
-<input id="usuario" placeholder="Usuário">
+<input id="usuario" placeholder="CPF ou Usuário">
 <input id="senha" type="password" placeholder="Senha">
-<button onclick="login()">Entrar</button>
 
-<script src="firebase.js"></script>
+<button onclick="entrar()">Entrar</button>
+
 <script>
-function login(){
+/* CONFIG FIREBASE */
+const firebaseConfig = {
+  apiKey: "AIzaSyC4T7yFe67rW7vCyTB9hARjfUOQwVCPmj0",
+  authDomain: "jaguarmotopecasagenda.firebaseapp.com",
+  projectId: "jaguarmotopecasagenda"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+/* FUNÇÃO LOGIN */
+function entrar(){
+  const usuario = document.getElementById("usuario").value;
+  const senha = document.getElementById("senha").value;
+
+  if(!usuario || !senha){
+    alert("Preencha usuário e senha");
+    return;
+  }
+
   db.collection("clientes")
-    .where("usuario","==",usuario.value)
-    .where("senha","==",senha.value)
+    .where("usuario", "==", usuario)
+    .where("senha", "==", senha)
     .get()
-    .then(snap=>{
-      if(!snap.empty){
-        localStorage.setItem("cliente", snap.docs[0].id);
-        location.href="agendamento.html";
-      } else {
+    .then((querySnapshot) => {
+
+      if(querySnapshot.empty){
         alert("Usuário ou senha inválidos");
+        return;
       }
+
+      // Login OK
+      alert("Login realizado com sucesso!");
+      window.location.href = "agendamento.html";
+    })
+    .catch((error) => {
+      alert("Erro no login: " + error.message);
     });
 }
 </script>
