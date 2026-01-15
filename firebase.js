@@ -11,5 +11,5 @@ const firebaseConfig = {
 // Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
 
-// 🔥 TORNA GLOBAL
+// Torna o Firestore global
 const db = firebase.firestore();
