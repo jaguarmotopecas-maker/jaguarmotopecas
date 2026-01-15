@@ -1,216 +1,53 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Agendamento</title>
-
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<h2>Agendamento de Serviço</h2>
-
-<form id="formAgendamento">
-  <input id="nome" placeholder="Nome do Cliente" required>
-  <input id="telefone" placeholder="Telefone" required>
-
-  <input id="moto" placeholder="Moto" required>
-  <input id="modelo" placeholder="Modelo" required>
-  <input id="ano" type="number" placeholder="Ano" required>
-
-  <input id="data" type="date" required>
-  <input id="hora" type="time" required>
-<select id="servico" required>
-  <option value="">Selecione o serviço</option>
-
-  <optgroup label="🔧 MOTOR">
-    <option>Revisão completa de motor</option>
-    <option>Abertura e fechamento de motor</option>
-    <option>Retífica de motor</option>
-    <option>Troca de pistão e anéis</option>
-    <option>Troca de biela</option>
-    <option>Troca de virabrequim</option>
-    <option>Troca de comando de válvulas</option>
-    <option>Regulagem de válvulas</option>
-    <option>Troca de junta do motor</option>
-    <option>Troca de retentores</option>
-    <option>Troca de rolamentos internos</option>
-    <option>Correção de vazamentos de óleo</option>
-    <option>Limpeza interna de motor</option>
-    <option>Análise de ruídos e batidas</option>
-  </optgroup>
-
-  <optgroup label="⚙️ SISTEMA DE TRANSMISSÃO">
-    <option>Troca de corrente</option>
-    <option>Troca de pinhão</option>
-    <option>Troca de coroa</option>
-    <option>Ajuste de corrente</option>
-    <option>Kit relação completo</option>
-    <option>Troca de embreagem</option>
-    <option>Troca de discos de embreagem</option>
-    <option>Troca de molas de embreagem</option>
-    <option>Regulagem de embreagem</option>
-    <option>Troca de cabo de embreagem</option>
-  </optgroup>
-
-  <optgroup label="⛽ SISTEMA DE ALIMENTAÇÃO - CARBURADOR">
-    <option>Limpeza de carburador</option>
-    <option>Regulagem de carburador</option>
-    <option>Troca de giclês</option>
-    <option>Troca de boia</option>
-    <option>Troca de reparo de carburador</option>
-  </optgroup>
-
-  <optgroup label="⛽ SISTEMA DE ALIMENTAÇÃO - INJEÇÃO ELETRÔNICA">
-    <option>Diagnóstico por scanner</option>
-    <option>Limpeza de bico injetor</option>
-    <option>Reset de ECU</option>
-    <option>Atualização de parâmetros</option>
-    <option>Correção de falhas de injeção</option>
-  </optgroup>
-
-  <optgroup label="🔥 SISTEMA DE IGNIÇÃO">
-    <option>Troca de vela</option>
-    <option>Troca de cachimbo de vela</option>
-    <option>Troca de bobina de ignição</option>
-    <option>Troca de CDI</option>
-    <option>Diagnóstico de falha de ignição</option>
-    <option>Ajuste de ponto de ignição</option>
-  </optgroup>
-
-  <optgroup label="⚡ SISTEMA ELÉTRICO">
-    <option>Revisão elétrica completa</option>
-    <option>Troca de bateria</option>
-    <option>Teste de carga de bateria</option>
-    <option>Troca de regulador/retificador</option>
-    <option>Troca de estator</option>
-    <option>Troca de chicote elétrico</option>
-    <option>Reparo em chicote</option>
-    <option>Troca de relés</option>
-    <option>Troca de fusíveis</option>
-    <option>Instalação de tomada USB</option>
-    <option>Instalação de alarme</option>
-    <option>Instalação de rastreador</option>
-  </optgroup>
-
-  <optgroup label="💡 ILUMINAÇÃO">
-    <option>Troca de lâmpada de farol</option>
-    <option>Troca de farol completo</option>
-    <option>Troca de lanterna traseira</option>
-    <option>Troca de pisca</option>
-    <option>Instalação de LED</option>
-    <option>Correção de falhas de iluminação</option>
-  </optgroup>
-
-  <optgroup label="🛞 SUSPENSÃO">
-    <option>Revisão de suspensão dianteira</option>
-    <option>Troca de retentores de bengala</option>
-    <option>Troca de óleo da suspensão</option>
-    <option>Revisão de suspensão traseira</option>
-    <option>Troca de amortecedor</option>
-    <option>Ajuste de suspensão</option>
-  </optgroup>
-
-  <optgroup label="🛑 FREIOS">
-    <option>Troca de pastilhas de freio</option>
-    <option>Troca de lonas de freio</option>
-    <option>Troca de disco de freio</option>
-    <option>Sangria de freio</option>
-    <option>Troca de fluido de freio</option>
-    <option>Revisão de pinça</option>
-    <option>Troca de cilindro mestre</option>
-    <option>Ajuste de freio traseiro</option>
-  </optgroup>
-
-  <optgroup label="🛞 RODAS E PNEUS">
-    <option>Troca de pneu</option>
-    <option>Balanceamento</option>
-    <option>Alinhamento de roda</option>
-    <option>Troca de câmara de ar</option>
-    <option>Reparo de roda</option>
-    <option>Troca de rolamentos de roda</option>
-    <option>Aperto e ajuste de raios</option>
-  </optgroup>
-
-  <optgroup label="🧰 DIREÇÃO">
-    <option>Revisão de caixa de direção</option>
-    <option>Troca de rolamentos de direção</option>
-    <option>Ajuste de mesa</option>
-    <option>Alinhamento de guidão</option>
-  </optgroup>
-
-  <optgroup label="🛠️ CHASSI E ESTRUTURA">
-    <option>Aperto geral</option>
-    <option>Solda em chassi</option>
-    <option>Correção de folgas</option>
-    <option>Substituição de suportes</option>
-    <option>Ajuste de pedaleiras</option>
-    <option>Troca de cavalete</option>
-  </optgroup>
-
-  <optgroup label="🧽 ESTÉTICA E CONFORTO">
-    <option>Lavagem técnica</option>
-    <option>Polimento</option>
-    <option>Ajuste de banco</option>
-    <option>Troca de manoplas</option>
-    <option>Troca de retrovisores</option>
-    <option>Instalação de protetores</option>
-    <option>Envelopamento simples</option>
-  </optgroup>
-
-  <optgroup label="🔍 REVISÕES PROGRAMADAS">
-    <option>Revisão 1.000 km</option>
-    <option>Revisão 5.000 km</option>
-    <option>Revisão 10.000 km</option>
-    <option>Revisão preventiva completa</option>
-    <option>Check-up geral</option>
-  </optgroup>
-
-  <optgroup label="📦 SERVIÇOS COMPLEMENTARES">
-    <option>Orçamento técnico</option>
-    <option>Laudo técnico</option>
-    <option>Pré-vistoria</option>
-    <option>Inspeção para viagem</option>
-    <option>Diagnóstico geral</option>
-    <option>Atendimento emergencial</option>
-  </optgroup>
-</select>
-
-
-  <button type="submit">Salvar Agendamento</button>
-</form>
-
-<br>
-
-<button onclick="voltar()">⬅ Voltar</button>
-
-<script src="firebase.js"></script>
-
 <script>
 const form = document.getElementById("formAgendamento");
 
 form.addEventListener("submit", async (e) => {
-  e.preventDefault(); // 🚫 impede recarregar a página
+  e.preventDefault(); // impede recarregar a página
+
+  // Valores do formulário
+  const nomeCliente = document.getElementById("nome").value.trim();
+  const telefoneCliente = document.getElementById("telefone").value.trim();
+  const moto = document.getElementById("moto").value.trim();
+  const modelo = document.getElementById("modelo").value.trim();
+  const ano = document.getElementById("ano").value.trim();
+  const data = document.getElementById("data").value;
+  const hora = document.getElementById("hora").value;
+  const servico = document.getElementById("servico").value;
+
+  if(!nomeCliente || !telefoneCliente || !moto || !modelo || !ano || !data || !hora || !servico){
+    alert("❌ Preencha todos os campos!");
+    return;
+  }
 
   try {
+    // Salva no Firestore
     await db.collection("agendamentos").add({
-      nome: nome.value,
-      telefone: telefone.value,
-      moto: moto.value,
-      modelo: modelo.value,
-      ano: ano.value,
-      data: data.value,
-      hora: hora.value,
-      servico: servico.value,
-      criadoEm: new Date()
+      nome: nomeCliente,
+      telefone: telefoneCliente,
+      moto,
+      modelo,
+      ano,
+      data,
+      hora,
+      servico,
+      criadoEm: firebase.firestore.FieldValue.serverTimestamp()
     });
 
     alert("✅ Agendamento salvo com sucesso!");
 
-    // 🧹 limpa o formulário automaticamente
+    // --- ENVIA WHATSAPP ---
+
+    // 1️⃣ WhatsApp da loja (coloque o número da sua loja)
+    const numeroLoja = "5585921496714"; // EXEMPLO: 55 + DDD + número
+    const msgLoja = `📅 *Novo agendamento*\nCliente: ${nomeCliente}\nTelefone: ${telefoneCliente}\nMoto: ${moto} ${modelo}\nAno: ${ano}\nServiço: ${servico}\nData/Hora: ${data} ${hora}`;
+    window.open(`https://wa.me/${numeroLoja}?text=${encodeURIComponent(msgLoja)}`, "_blank");
+
+    // 2️⃣ WhatsApp do cliente
+    const numeroCliente = telefoneCliente.replace(/\D/g, ""); // remove caracteres não numéricos
+    const msgCliente = `Olá ${nomeCliente}! Seu agendamento para ${moto} ${modelo} (${servico}) foi confirmado para ${data} às ${hora}. Obrigado!`;
+    window.open(`https://wa.me/55${numeroCliente}?text=${encodeURIComponent(msgCliente)}`, "_blank");
+
+    // Limpa o formulário
     form.reset();
 
   } catch (error) {
@@ -218,10 +55,8 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
+// Função voltar
 function voltar(){
   location.href = "index.html";
 }
 </script>
-
-</body>
-</html>
