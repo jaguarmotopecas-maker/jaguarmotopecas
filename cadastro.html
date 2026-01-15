@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Cadastro</title>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Cadastro de Cliente</h2>
+
+<input id="nome" placeholder="Nome">
+<input id="usuario" placeholder="CPF ou Usuário">
+<input id="moto" placeholder="Moto">
+<input id="ano" type="number" placeholder="Ano da Moto">
+<input id="modelo" placeholder="Modelo">
+<input id="placa" placeholder="Placa">
+<input id="senha" type="password" placeholder="Senha">
+
+<button onclick="salvar()">Salvar</button>
+
+<script src="firebase.js"></script>
+<script>
+function salvar(){
+  db.collection("clientes").add({
+    nome: nome.value,
+    usuario: usuario.value,
+    moto: moto.value,
+    ano: ano.value,
+    modelo: modelo.value,
+    placa: placa.value,
+    senha: senha.value,
+    criadoEm: new Date()
+  }).then(()=>{
+    alert("Cadastro realizado!");
+    location.href="login.html";
+  });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Agendamento</title>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Agendar Serviço</h2>
+
+<select id="servico">
+  <option>Troca de óleo</option>
+  <option>Revisão</option>
+  <option>Elétrica</option>
+</select>
+
+<input type="date" id="data">
+<input type="time" id="hora">
+
+<button onclick="agendar()">Agendar</button>
+
+<script src="firebase.js"></script>
+<script>
+function agendar(){
+  db.collection("agendamentos").add({
+    cliente: localStorage.getItem("cliente"),
+    servico: servico.value,
+    data: data.value,
+    hora: hora.value
+  }).then(()=>{
+    alert("Agendamento confirmado!");
+    window.open("https://wa.me/5585921496714?text=Agendamento confirmado","_blank");
+  });
+}
+</script>
+
+</body>
+</html>
