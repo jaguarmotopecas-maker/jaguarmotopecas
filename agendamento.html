@@ -2,10 +2,11 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agendamento - Jaguar Motopeças</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<link rel="stylesheet" href="style.css">
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -17,69 +18,38 @@
   }
   .container {
     width: 100%;
-    max-width: 550px;
+    max-width: 600px;
     background: #222;
     padding: 20px;
-    border-radius: 15px;
+    border-radius: 12px;
     box-shadow: 0 0 10px #000;
   }
-  img.logo {
-    display: block;
-    margin: 0 auto 20px;
-    width: 200px;
-  }
-  h2 {
-    text-align: center;
-    color: #00e676;
-    margin-bottom: 20px;
-  }
+  h2 { color: #00e676; text-align: center; margin-bottom: 20px; }
   input, select, button {
     width: 100%;
-    padding: 12px;
+    padding: 10px;
     margin: 6px 0;
-    border-radius: 10px;
+    border-radius: 8px;
     border: none;
-    font-size: 16px;
-  }
-  input, select {
-    background: #333;
-    color: #fff;
   }
   button {
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.3s;
-  }
-  #btnSalvar {
     background: #00e676;
-    color: #000;
+    color: #111;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
   }
-  #btnSalvar:hover {
-    background: #00c853;
-  }
-  #btnMeusAgendamentos {
-    background: #ff9800;
-    color: #fff;
-  }
-  #btnMeusAgendamentos:hover {
-    background: #fb8c00;
-  }
-  #listaAgendamentos {
-    margin-top: 20px;
-    background: #333;
-    padding: 15px;
-    border-radius: 10px;
-  }
-  #listaAgendamentos li {
-    margin: 8px 0;
-  }
+  button:hover { background: #00c853; }
+  #btnMeusAgendamentos { background: #ff9800; margin-top: 10px; }
+  #btnMeusAgendamentos:hover { background: #fb8c00; }
+  #listaAgendamentos { margin-top: 15px; background: #333; padding: 10px; border-radius: 8px; }
+  #listaAgendamentos ul { list-style: none; padding: 0; }
+  #listaAgendamentos li { padding: 5px 0; border-bottom: 1px solid #444; }
 </style>
 </head>
 <body>
+
 <div class="container">
-
-  <img src="logo_jaguar.png" alt="Jaguar Motopeças" class="logo">
-
   <h2>Agendamento de Serviço</h2>
 
   <form id="formAgendamento">
@@ -93,7 +63,7 @@
 
     <select id="servico" required>
       <option value="">Selecione o serviço</option>
-
+      
       <!-- MOTOR -->
       <optgroup label="🔧 MOTOR">
         <option>Revisão completa de motor</option>
@@ -221,7 +191,7 @@
         <option>Alinhamento de guidão</option>
       </optgroup>
 
-      <!-- CHASSI E ESTRUTURA -->
+      <!-- CHASSI -->
       <optgroup label="🛠️ CHASSI E ESTRUTURA">
         <option>Aperto geral</option>
         <option>Solda em chassi</option>
@@ -231,7 +201,7 @@
         <option>Troca de cavalete</option>
       </optgroup>
 
-      <!-- ESTÉTICA E CONFORTO -->
+      <!-- ESTÉTICA -->
       <optgroup label="🧽 ESTÉTICA E CONFORTO">
         <option>Lavagem técnica</option>
         <option>Polimento</option>
@@ -267,17 +237,17 @@
     <button type="button" id="btnMeusAgendamentos">📅 Meus Agendamentos</button>
   </form>
 
-  <button onclick="voltar()" style="margin-top:10px; width:100%; background:#555;">⬅ Voltar</button>
-
   <div id="listaAgendamentos" style="display:none;">
     <h3>Seus Agendamentos:</h3>
     <ul id="agendamentosCliente"></ul>
   </div>
 
+  <button onclick="voltar()" style="margin-top:10px; background:#ff5252;">⬅ Voltar</button>
+
 </div>
 
 <script>
-  // Firebase
+  // Configuração Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyC4T7yFe67rW7vCyTB9hARjfUOQwVCPmj0",
     authDomain: "jaguarmotopecasagenda.firebaseapp.com",
@@ -291,9 +261,14 @@
 
   const form = document.getElementById("formAgendamento");
   const btnSalvar = document.getElementById("btnSalvar");
+  const btnMeusAgendamentos = document.getElementById("btnMeusAgendamentos");
+  const listaDiv = document.getElementById("listaAgendamentos");
+  const ulAgendamentos = document.getElementById("agendamentosCliente");
 
+  // Salvar agendamento
   btnSalvar.addEventListener("click", async (e) => {
     e.preventDefault();
+
     const nomeCliente = document.getElementById("nome").value.trim();
     const telefoneCliente = document.getElementById("telefone").value.trim();
     const moto = document.getElementById("moto").value.trim();
@@ -309,9 +284,12 @@
     }
 
     try {
+      // Padroniza telefone
+      const numeroCliente = telefoneCliente.replace(/\D/g,"");
+
       await db.collection("agendamentos").add({
         nome: nomeCliente,
-        telefone: telefoneCliente,
+        telefone: numeroCliente,
         moto,
         modelo,
         ano,
@@ -321,11 +299,13 @@
         criadoEm: firebase.firestore.FieldValue.serverTimestamp()
       });
 
+      // Salva telefone localmente para sessão
+      localStorage.setItem("telefoneCliente", numeroCliente);
+
       alert("✅ Agendamento salvo com sucesso!");
 
+      // WhatsApp
       const numeroLoja = "5585921496714";
-      const numeroCliente = telefoneCliente.replace(/\D/g,"");
-
       const msgLoja = `📅 *Novo agendamento*\nCliente: ${nomeCliente}\nTelefone: ${telefoneCliente}\nMoto: ${moto} ${modelo}\nAno: ${ano}\nServiço: ${servico}\nData/Hora: ${data} ${hora}`;
       const msgCliente = `Olá ${nomeCliente}! Seu agendamento para ${moto} ${modelo} (${servico}) foi confirmado para ${data} às ${hora}. Obrigado!`;
 
@@ -338,13 +318,13 @@
     }
   });
 
-  const btnMeusAgendamentos = document.getElementById("btnMeusAgendamentos");
-  const listaDiv = document.getElementById("listaAgendamentos");
-  const ulAgendamentos = document.getElementById("agendamentosCliente");
-
+  // Mostrar agendamentos
   btnMeusAgendamentos.addEventListener("click", async () => {
-    const telefoneCliente = prompt("Digite seu telefone para ver seus agendamentos:");
-    if (!telefoneCliente) return;
+    const telefoneCliente = localStorage.getItem("telefoneCliente");
+    if (!telefoneCliente) {
+      alert("Você ainda não fez nenhum agendamento.");
+      return;
+    }
 
     ulAgendamentos.innerHTML = "";
 
@@ -376,5 +356,6 @@
     location.href = "index.html";
   }
 </script>
+
 </body>
 </html>
